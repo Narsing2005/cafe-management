@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+{% block heading %}New Order{% endblock %}
+{% block content %}
+<form method="post" class="panel">
+  <div class="form-row" style="max-width:360px">
+    <label>Customer Name</label>
+    <input type="text" name="customer_name" placeholder="Walk-in" value="Walk-in">
+  </div>
+
+  <h3 style="margin-top:8px">Items</h3>
+  <table>
+    <thead><tr><th></th><th>Item</th><th>Category</th><th>Price</th><th>Qty</th><th>Subtotal</th></tr></thead>
+    <tbody>
+    {% for it in items %}
+      {% set img_src = it.image if it.image and it.image.startswith('http') else (url_for('main.uploads', filename=it.image) if it.image else '') %}
+      <tr class="order-line" data-price="{{ it.price }}">
+        <td>
+          {% if img_src %}<img src="{{ img_src }}" alt="" style="width:48px;height:48px;object-fit:cover;border-radius:8px">
+          {% else %}<div style="width:48px;height:48px;border-radius:8px;background:#f0e6d2;display:grid;place-items:center"><i class="fa-solid fa-mug-saucer" style="color:#c9882a"></i></div>{% endif %}
+        </td>
+        <td>
+          <input type="hidden" name="item_id[]" value="{{ it.id }}">
+          {{ it.name }}
+        </td>
+        <td style="color:var(--muted)">{{ it.category }}</td>
+        <td>₹{{ '%.2f'|format(it.price) }}</td>
+        <td><input type="number" name="qty[]" min="0" value="0" style="width:80px"></td>
+        <td class="subtotal">₹0.00</td>
+      </tr>
+    {% endfor %}
+    </tbody>
+    <tfoot>
+      <tr><td colspan="5" style="text-align:right;font-weight:700">Total:</td>
+          <td id="orderTotal" style="font-weight:700;color:var(--accent-2)">₹0.00</td></tr>
+    </tfoot>
+  </table>
+
+  <div style="margin-top:18px">
+    <button class="btn"><i class="fa-solid fa-check"></i> Create Order</button>
+    <a class="btn ghost" href="{{ url_for('main.orders') }}">Cancel</a>
+  </div>
+</form>
+{% endblock %}

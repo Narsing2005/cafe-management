@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+{% block title %}Brewline Cafe — Menu{% endblock %}
+{% block bare %}
+<header class="topbar">
+  <div class="brand"><i class="fa-solid fa-mug-saucer"></i> Brewline</div>
+  <a class="btn ghost" href="{{ url_for('main.login') }}"><i class="fa-solid fa-user-shield"></i> Admin</a>
+</header>
+
+<section class="hero">
+  <h1>Crafted Coffee. Comforting Bites.</h1>
+  <p>Browse our menu, build your order, and we'll have it ready.</p>
+</section>
+
+<div class="content">
+  <div class="menu-grid">
+    {% for it in items %}
+    {% set img_src = it.image if it.image and it.image.startswith('http') else (url_for('main.uploads', filename=it.image) if it.image else '') %}
+    <div class="menu-card">
+      <div class="img" {% if img_src %}style="background-image:url('{{ img_src }}')"{% endif %}>
+        {% if not img_src %}<i class="fa-solid fa-mug-saucer"></i>{% endif %}
+      </div>
+      <div class="body">
+        <div class="cat">{{ it.category }}</div>
+        <h3>{{ it.name }}</h3>
+        {% if it.description %}<p style="color:var(--muted);font-size:13px;margin:6px 0">{{ it.description }}</p>{% endif %}
+        <div class="price">₹{{ '%.2f'|format(it.price) }}</div>
+        <button type="button" class="btn sm add-btn" style="margin-top:10px"
+          data-id="{{ it.id }}" data-name="{{ it.name }}" data-price="{{ it.price }}">
+          <i class="fa-solid fa-plus"></i> Add
+        </button>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+
+  <div id="billBox" style="margin-top:24px"></div>
+</div>
+
+<button class="cart-fab" onclick="toggleCart()">
+  <i class="fa-solid fa-cart-shopping"></i>
+  <span class="count" id="cartCount">0</span>
+</button>
+
+<aside class="cart-drawer" id="cartDrawer">
+  <h2>Your Cart</h2>
+  <input type="text" id="custName" placeholder="Your name" style="margin-bottom:10px">
+  <div class="cart-list" id="cartList"></div>
+  <div class="cart-total">Total: <span id="cartTotal">₹0.00</span></div>
+  <div style="display:flex;gap:8px">
+    <button class="btn" style="flex:1" onclick="placeOrder()"><i class="fa-solid fa-check"></i> Place Order</button>
+    <button class="btn ghost" onclick="toggleCart()">Close</button>
+  </div>
+</aside>
+
+<footer class="footer">© Brewline Cafe — freshly brewed since today.</footer>
+{% endblock %}

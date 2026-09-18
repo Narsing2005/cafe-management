@@ -1,0 +1,81 @@
+{% extends 'base.html' %}
+{% block heading %}Dashboard{% endblock %}
+{% block content %}
+<div class="cards">
+  <div class="card stat">
+    <div><div class="label">Total Orders</div><div class="value">{{ stats.total_orders }}</div></div>
+    <div class="icon"><i class="fa-solid fa-receipt"></i></div>
+  </div>
+  <div class="card stat">
+    <div><div class="label">Revenue</div><div class="value">₹{{ '%.2f'|format(stats.total_revenue) }}</div></div>
+    <div class="icon"><i class="fa-solid fa-dollar-sign"></i></div>
+  </div>
+  <div class="card stat">
+    <div><div class="label">Menu Items</div><div class="value">{{ stats.total_items }}</div></div>
+    <div class="icon"><i class="fa-solid fa-utensils"></i></div>
+  </div>
+  <div class="card stat">
+    <div><div class="label">Pending</div><div class="value">{{ stats.pending_orders }}</div></div>
+    <div class="icon"><i class="fa-solid fa-clock"></i></div>
+  </div>
+</div>
+
+<div class="toolbar">
+  <a class="btn" href="{{ url_for('main.order_new') }}"><i class="fa-solid fa-plus"></i> New Order</a>
+  <a class="btn ghost" href="{{ url_for('main.menu_new') }}"><i class="fa-solid fa-burger"></i> Add Menu Item</a>
+  <a class="btn ghost" href="{{ url_for('main.orders') }}"><i class="fa-solid fa-list"></i> All Orders</a>
+</div>
+
+<div class="grid-2">
+  <div class="panel">
+    <h2>Revenue (Last 7 active days)</h2>
+    <canvas id="revChart" height="120"></canvas>
+  </div>
+  <div class="panel">
+    <h2>Recent Orders</h2>
+    <table>
+      <thead><tr><th>#</th><th>Customer</th><th>Total</th><th>Status</th></tr></thead>
+      <tbody>
+      {% for o in recent %}
+        <tr>
+          <td><a href="{{ url_for('main.order_view', order_id=o.id) }}">#{{o.id}}</a></td>
+          <td>{{ o.customer_name }}</td>
+          <td>₹{{ '%.2f'|format(o.total) }}</td>
+          <td><span class="badge b-{{ o.status|lower }}">{{ o.status }}</span></td>
+        </tr>
+      {% else %}
+        <tr><td colspan="4" style="color:var(--muted)">No orders yet.</td></tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+const ctx = document.getElementById('revChart');
+new Chart(ctx, {
+  type: 'line',
+  data: {
+    labels: '{{ chart_labels|tojson }}',
+    datasets: [{
+      label: 'Revenue (₹)',
+      data: '{{ chart_values|tojson }}',
+      borderColor: '#c9882a',
+      backgroundColor: 'rgba(201,136,42,.18)',
+      fill: true, tension: .35, pointBackgroundColor: '#e0a44a'
+    }]
+  },
+  options: {
+    responsive: true,
+    plugins: { legend: { labels: { color: '#f5e6d3' } } },
+    scales: {
+      x: { ticks: { color: '#b8a48c' }, grid: { color: 'rgba(245,230,211,.06)' } },
+      y: { ticks: { color: '#b8a48c' }, grid: { color: 'rgba(245,230,211,.06)' } }
+    }
+  }
+});
+</script>
+{% endblock %}
