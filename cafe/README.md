@@ -1,7 +1,6 @@
 # Brewline — Cafe Management System
 
 Full‑stack Cafe Management System built with **Python Flask + MySQL + HTML/CSS/JS**.
-Warm‑cafe themed UI (palette: `#1a1410`, `#3d2817`, `#c9882a`, `#f5e6d3`).
 
 ## Features
 - Admin login / logout, Flask session, form validation, flash messages
@@ -17,28 +16,6 @@ Warm‑cafe themed UI (palette: `#1a1410`, `#3d2817`, `#c9882a`, `#f5e6d3`).
 - DB: MySQL (XAMPP)
 - Frontend: HTML5, CSS3, vanilla JS, Chart.js (CDN), Font Awesome (CDN), Google Fonts
 
-## Setup (VS Code + XAMPP)
-
-1. **Start MySQL** in XAMPP control panel.
-2. **Create database** — open phpMyAdmin → Import → select `database/schema.sql`.
-   Default admin: **username `admin` / password `admin123`**.
-3. **Create a virtualenv & install deps**
-   ```bash
-   python -m venv venv
-   # Windows: venv\Scripts\activate
-   source venv/bin/activate
-   pip install -r requirements.txt
-   ```
-   > On Windows, if `mysqlclient` fails: `pip install mysqlclient` from a wheel
-   > (https://www.lfd.uci.edu/~gohlke/pythonlibs/#mysqlclient) or use
-   > `pip install pymysql` and change `MYSQL_*` config to use pymysql.
-4. **Configure DB** — edit `app/config.py` (defaults match XAMPP: host `localhost`,
-   user `root`, password ``, db `cafe_db`).
-5. **Run**
-   ```bash
-   python run.py
-   ```
-   Open <http://localhost:5000>.
 
 ## Folder structure
 ```
